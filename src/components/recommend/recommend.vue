@@ -7,6 +7,9 @@
        </li>
       </ul>
     </slider>
+
+    <div ref="recommendList" style="height: 300px;overflow: hidden;">
+   
     <ul class="recommend-list-container">
       <li v-for="recommend in recommendList">
         <div class="recommend-item">
@@ -18,11 +21,13 @@
         </div>
       </li>
     </ul>
+    </div>
   </div>	
 </template>
 <script type="text/ecmascript-6">
 import {getSliderList, getRecommendList} from 'api/recommend';
 import Slider from 'base/slider';
+import BScroll from 'better-scroll';
 export default {
   components: {
     Slider
@@ -42,6 +47,13 @@ export default {
       console.info(response.data);
 
       this.sliderList = response.data.slider;
+      setTimeout(() => {
+        let scroll = new BScroll(this.$refs.recommendList, {
+          scrollY: true,
+          click: true
+        });
+        console.info(scroll);
+      }, 1000);
     });
     getRecommendList().then((response) => {
       console.info('打印dataList');
@@ -54,7 +66,6 @@ export default {
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import  "~common/stylus/variable"
   .recommend-container
-    color: #fff
     .recommend-slider
       display: flex;
       li
