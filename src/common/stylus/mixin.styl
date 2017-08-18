@@ -1,8 +1,8 @@
 // 背景图片
-bg-image($url)
-  background-image: url($url + "@2x.png")
+bg-image($url, $fileFormat)
+  background-image: url($url + "@2x." + $fileFormat)
   @media (-webkit-min-device-pixel-ratio: 3),(min-device-pixel-ratio: 3)
-    background-image: url($url + "@3x.png")
+    background-image: url($url + "@3x." + $fileFormat)
 
 // 不换行
 no-wrap()

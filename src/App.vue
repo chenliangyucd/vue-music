@@ -20,9 +20,8 @@ export default {
 };
 </script>
 
-<style scoped lang="stylus" rel="stylesheet/stylus">
+<style lang="stylus" rel="stylesheet/stylus">
   @import  "~common/stylus/variable"
-  #app
-    color: $color-theme
+  @import  "~common/stylus/index"
 
 </style>
