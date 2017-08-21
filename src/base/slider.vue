@@ -16,8 +16,14 @@ export default {
   },
   watch: {
     dataList (dataList, olddataList) {
-      console.info((dataList.length * 100) + '%');
       this.$refs.sliderContainer.style.width = (dataList.length * 100) + '%';
+      let itemWidth = (1 / dataList.length * 100) + '%';
+      setTimeout(() => {
+        let hookItemWraps = this.$refs.sliderContainer.querySelectorAll('.hook-item-wrap');
+        for (let i = 0; i < hookItemWraps.length; i++) {
+          hookItemWraps[i].style.width = itemWidth;
+        }
+      }, 20);
     }
   },
   mounted () {

@@ -1,36 +1,34 @@
 <template>
-  <div class="recommend-container"> 
-    <slider :dataList="sliderList" >
-      <ul class="recommend-slider">
-       <li v-for="slider in sliderList">
-         <a :href="slider.linkUrl"><img :src="slider.picUrl" alt="服务器走神了?"></a>
-       </li>
-      </ul>
-    </slider>
-
-    <div ref="recommendList" style="height: 300px;overflow: hidden;">
-   
-    <ul class="recommend-list-container">
-      <li v-for="recommend in recommendList">
-        <div class="recommend-item">
+  <scroll class="scroll-container" :dataList="recommendList">
+    <div class="recommend-container"> 
+      <slider :dataList="sliderList" >
+        <ul class="recommend-slider">
+         <li v-for="slider in sliderList" class="hook-item-wrap">
+           <a :href="slider.linkUrl"><img :src="slider.picUrl" alt="服务器走神了?"></a>
+         </li>
+        </ul>
+      </slider>
+     
+      <ul class="recommend-list-container">
+        <li class="recommend-item" v-for="recommend in recommendList">
           <img class="recommend-item-avator" :src="recommend.imgurl">
           <div class="recommend-item-content">
             <p class="recommend-item-author" v-html="recommend.creator.name"></p>
             <p class="recommend-item-des" v-html="recommend.dissname"></p>
           </div>
-        </div>
-      </li>
-    </ul>
+        </li>
+      </ul>
     </div>
-  </div>	
+  </scroll>	
 </template>
 <script type="text/ecmascript-6">
 import {getSliderList, getRecommendList} from 'api/recommend';
 import Slider from 'base/slider';
-import BScroll from 'better-scroll';
+import Scroll from 'base/scroll';
 export default {
   components: {
-    Slider
+    Slider,
+    Scroll
   },
 
   data () {
@@ -45,15 +43,7 @@ export default {
     getSliderList().then((response) => {
       console.info('打印返回值');
       console.info(response.data);
-
       this.sliderList = response.data.slider;
-      setTimeout(() => {
-        let scroll = new BScroll(this.$refs.recommendList, {
-          scrollY: true,
-          click: true
-        });
-        console.info(scroll);
-      }, 1000);
     });
     getRecommendList().then((response) => {
       console.info('打印dataList');
@@ -64,16 +54,26 @@ export default {
 };
 </script>
 <style scoped lang="stylus" rel="stylesheet/stylus">
+  /* flex-grow 并不是我想的那样，比如父元素1000px flex-grow 为1 平分的前提是  里面的内容的高度或者宽度*/
   @import  "~common/stylus/variable"
+  .scroll-container
+    position: fixed
+    top: 96px
+    bottom: 0
+    overflow: hidden  
   .recommend-container
     .recommend-slider
-      display: flex;
+      display: flex
       li
-        flex-grow: 1
-        img
+        a
+          display: inline-block
           width: 100%
+          img
+            width: 100%
     .recommend-list-container
       .recommend-item
+        &:first-of-type
+          margin-top: 13px
         display: flex
         margin-top: 26px
         align-items: center
