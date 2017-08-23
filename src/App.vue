@@ -9,6 +9,7 @@
 </template>
 
 <script>
+/* http://vuemusic.t.imooc.io/#/rank */
 import MHeader from 'components/m-header/m-header';
 import Tab from 'components/tab/tab';
 export default {
@@ -23,5 +24,5 @@ export default {
 <style lang="stylus" rel="stylesheet/stylus">
   @import  "~common/stylus/variable"
   @import  "~common/stylus/index"
-
+  
 </style>

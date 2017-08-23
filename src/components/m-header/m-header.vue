@@ -1,6 +1,6 @@
 <template>
   <div class="m-head">
-    <i class="m-logo"></i>KLY Music
+    <i class="m-logo"></i>CLY Music
   </div>	
 </template>
 <script type="text/ecmascript-6">
