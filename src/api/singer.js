@@ -17,3 +17,4 @@ export function getSingerList () {
 
   return jsonp(url, data, options);
 }
+

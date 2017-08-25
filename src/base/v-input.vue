@@ -18,6 +18,7 @@
     },
     data () {
       return {
+        inputTimer: null,
         showDelete: false
       };
     },
@@ -30,13 +31,28 @@
       },
       input () {
         this._showDeletIcon();
+        if (this.inputTimer != null) {
+          window.clearTimeout(this.inputTimer);
+        }
+        this.inputTimer = setTimeout(() => {
+          this.$emit('input', this.getValue());
+          this.inputTimer = null;
+        }, 300);
       },
       clearInput () {
         this.$refs['v-input'].value = '';
         this._showDeletIcon();
+        this.$emit('clear');
+      },
+      getValue () {
+        return this.$refs['v-input'].value;
+      },
+      setValue (value) {
+        console.info('set value', value);
+        this.$refs['v-input'].value = value;
       },
       _showDeletIcon () {
-        if (this.$refs['v-input'].value.length > 0) {
+        if (this.getValue().length > 0) {
           this.showDelete = true;
         } else {
           this.showDelete = false;
@@ -48,6 +64,9 @@
       this.$nextTick(() => {
 
       });
+    },
+    destroyed () {
+      console.info('组件销毁');
     }
   };
 </script>

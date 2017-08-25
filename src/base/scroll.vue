@@ -19,11 +19,28 @@
       probeType: {
         type: Number,
         default: 0
+      },
+      pullUpLoad: {
+        type: Boolean,
+        default: false
+      },
+      pullDownRefreshThreshold: {
+        type: Number,
+        default: 90
+      },
+      pullDownRefreshStop: {
+        type: Number,
+        default: 40
       }
+    },
+    mounted () {
+      this.$nextTick(() => {
+        this._createBetterScroll();
+      });
     },
     methods: {
       refresh () {
-        console.info('老子是refreshTest');
+        this.betterScroll.refresh();
       },
       // 注册滚动事件
       scroll () {
@@ -34,21 +51,36 @@
           this.$emit('scroll', offset);
         });
       },
+      // 注册上拉事件
+      pullingUp () {
+        // if (!this.pullUpLoad) {
+        //  return;
+        // }
+        this.betterScroll.on('pullingUp', () => {
+          console.info('scroll pullingUp');
+          this.$emit('pullingUp');
+        });
+      },
       scrollToElement (el, time, offsetX, offsetY, easing) {
         this.betterScroll.scrollToElement(el, time, offsetX, offsetY, easing);
+      },
+      _createBetterScroll () {
+        if (this.betterScroll === null) {
+          console.info('execute beeterScroll');
+          this.betterScroll = new BScroll(this.$refs.scrollContainer, {
+            probeType: this.probeType,
+            pullDownRefresh: {threshold: 50, stop: 50},
+            pullUpLoad: {threshold: 50}
+          });
+          this.scroll();
+          this.pullingUp();
+        }
       }
     },
     watch: {
       dataList () {
-        if (this.betterScroll === null) {
-          this.betterScroll = new BScroll(this.$refs.scrollContainer, {
-            probeType: this.probeType
-          });
-          this.scroll();
-        }
-
         this.$nextTick(() => {
-          this.betterScroll.refresh();
+          this.refresh();
         });
       }
     }

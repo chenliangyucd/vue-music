@@ -54,7 +54,9 @@ export default {
           padding-left: 25px
           background-color: #333
           p
-           width: 170px
-           no-wrap()
+            width: 160px
+            no-wrap()
+            @media (max-width: 320px)
+              width: 120px
 
 </style>
