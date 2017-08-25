@@ -11,6 +11,7 @@
     "lint": "eslint --ext .js,.vue src"
   },
   "dependencies": {
+    "animate.css": "^3.5.2",
     "axios": "^0.16.2",
     "babel-runtime": "^6.25.0",
     "better-scroll": "^1.1.1",

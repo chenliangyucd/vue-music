@@ -22,7 +22,9 @@ export default {
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
+  /* 好神奇的 ~, 这个~到底是什么意思*/
   @import  "~common/stylus/variable"
   @import  "~common/stylus/index"
+  // @import "~animate.css"
   
 </style>

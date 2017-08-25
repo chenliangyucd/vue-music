@@ -19,7 +19,7 @@
   </div>	
 </template>
 <script type="text/ecmascript-6">
-import VInput from 'base/v-input';
+import VInput from 'components/v-input/v-input';
 import Scroll from 'base/scroll';
 import {getHotSearchList, search} from 'api/search';
 export default {

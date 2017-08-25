@@ -5,7 +5,7 @@
         <template v-for="(findex, index) in findexList">
           <h2 class="singer-title" v-html="findex == '热'?'热门':findex" :data-findex="findex"></h2>
           <ul>
-            <li class="singer-item" v-for="singer in singerMap.get(findex)">
+            <li class="singer-item" @click="clickSinger(singer)" v-for="singer in singerMap.get(findex)">
               <img class="singer-avator" :src="singer.avatorUrl"><span class="singer-name" v-html="singer.Fsinger_name"></span>
             </li>
           </ul>
@@ -16,10 +16,19 @@
       <li :class="{'singer-index-active': findex === activeFindex}" @click="clickSingerIndex(findex)" v-for="(findex, index) in findexList" v-html="findex">
       </li>
     </ul>
+    <slide-left :slideTitle="slideTitle" ref="slidLeft">
+      <div>
+        abc
+      </div>
+      <div>
+       bcd
+      </div>
+    </slide-left>
   </div>	
 </template>
 <script type="text/ecmascript-6">
 import {getSingerList} from 'api/singer';
+import SlideLeft from 'base/slide-left';
 import Scroll from 'base/scroll';
 export default {
   data () {
@@ -27,11 +36,13 @@ export default {
       activeFindex: null,
       singerMap: new Map(),
       findexDistance: new Map(),
-      findexList: []
+      findexList: [],
+      slideTitle: ''
     };
   },
   components: {
-    Scroll
+    Scroll,
+    SlideLeft
   },
   created () {
     getSingerList().then((response) => {
@@ -39,6 +50,10 @@ export default {
     });
   },
   methods: {
+    clickSinger (singer) {
+      this.slideTitle = singer.Fsinger_name;
+      this.$refs.slidLeft.slideLeft();
+    },
     clickSingerIndex (findex) {
       // this.$refs.scrollContainer.refresh();
       let singerList = this.$refs.singerList;
@@ -50,7 +65,7 @@ export default {
     _dealSingerList (singerList) {
       const preUrl = 'https://y.gtimg.cn/music/photo_new/T001R300x300M000';
       const singerMap = new Map();
-      let findex, singerFindexList;
+      let [findex, singerFindexList] = [];
       let [hotSingers, findexList] = [[], []];
 
       for (let i = 0; i < singerList.length; i++) {

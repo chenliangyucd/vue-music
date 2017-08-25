@@ -2,7 +2,7 @@
   <div class="rank-container">
    <scroll class="scroll-container" :dataList="topList">
     <ul class="rank-list">
-      <li class="rank-item" v-for="top in topList">
+      <li class="rank-item" @click="clickRank" v-for="top in topList">
         <img class="rank-img" :src="top.picUrl">
         <div class="rank-des">
           <p v-for="(song, index) in top.songList" v-html="(index + 1 + ' ') + song.songname + song.singername"></p>
@@ -10,19 +10,28 @@
       </li>
     </ul>
    </scroll>
+   <slide-left :slideTitle="slideTitle" ref="slidLeft"></slide-left>
   </div>	
 </template>
 <script type="text/ecmascript-6">
 import {getTopList} from 'api/rank';
 import Scroll from 'base/scroll';
+import SlideLeft from 'base/slide-left';
 export default {
   data () {
     return {
-      topList: []
+      topList: [],
+      slideTitle: ''
     };
   },
   components: {
-    Scroll
+    Scroll,
+    SlideLeft
+  },
+  methods: {
+    clickRank () {
+      this.$refs.slidLeft.slideLeft();
+    }
   },
   created () {
     getTopList().then((response) => {
