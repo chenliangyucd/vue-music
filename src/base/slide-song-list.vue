@@ -27,7 +27,7 @@
       },
       slideDataList: {
         type: Array,
-        default: []
+        default: () => [] //  对象或者数组类的默认值必须通过函数来返回默认值
       }
     },
     methods: {

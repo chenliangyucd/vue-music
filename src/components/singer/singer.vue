@@ -30,7 +30,6 @@
 </template>
 <script type="text/ecmascript-6">
 import {getSingerList, getSingerDetail} from 'api/singer';
-import SlideLeft from 'base/slide-left';
 import SlideSongList from 'base/slide-song-list';
 import Scroll from 'base/scroll';
 export default {
@@ -46,7 +45,6 @@ export default {
   },
   components: {
     Scroll,
-    SlideLeft,
     SlideSongList
   },
   created () {
