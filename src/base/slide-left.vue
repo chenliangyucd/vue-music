@@ -39,9 +39,15 @@
         this.isSlideRight = false;
       },
       slideRight () {
+        this.$emit('eventSlideRight');
         this.isSlideLeft = false;
         this.isSlideRight = true;
       }
+    },
+    // 对于keep-alive的组件调用时候的回掉函数, 非keep-alive
+    deactivated () {
+      this.isSlideLeft = false;
+      this.isSlideRight = false;
     }
   };
 </script>
@@ -60,6 +66,7 @@
       top: 0;
       left: 0
       right: 0
+      z-index: 1
       padding-top: 12px
       text-align: center
       .slide-icon

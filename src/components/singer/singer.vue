@@ -16,43 +16,56 @@
       <li :class="{'singer-index-active': findex === activeFindex}" @click="clickSingerIndex(findex)" v-for="(findex, index) in findexList" v-html="findex">
       </li>
     </ul>
-    <slide-left :slideTitle="slideTitle" ref="slidLeft">
-      <div>
-        abc
-      </div>
-      <div>
-       bcd
-      </div>
-    </slide-left>
+    <slide-song-list :slideTitle="singer.Fsinger_name" :slideAvatorUrl="singer.avatorUrl" :slideDataList="singerDetailList" @eventSlideRight="eventSlideRight" ref="slidSongList">
+       <template scope="props">
+          <li class="singer-detail-item">
+            <div class="singer-detail-songname" v-text="props.item.musicData.songname">
+            </div>
+            <div class="singer-detail-albumname" v-text="singer.Fsinger_name + ' ' + props.item.musicData.albumname">
+            </div>
+          </li>
+        </template>
+    </slide-song-list>
   </div>	
 </template>
 <script type="text/ecmascript-6">
-import {getSingerList} from 'api/singer';
+import {getSingerList, getSingerDetail} from 'api/singer';
 import SlideLeft from 'base/slide-left';
+import SlideSongList from 'base/slide-song-list';
 import Scroll from 'base/scroll';
 export default {
   data () {
     return {
-      activeFindex: null,
+      activeFindex: -1,
       singerMap: new Map(),
       findexDistance: new Map(),
       findexList: [],
-      slideTitle: ''
+      singer: {},
+      singerDetailList: []
     };
   },
   components: {
     Scroll,
-    SlideLeft
+    SlideLeft,
+    SlideSongList
   },
   created () {
     getSingerList().then((response) => {
       this._dealSingerList(response.data.list);
     });
   },
+  destroyed () {
+    console.info('destroy');
+  },
   methods: {
     clickSinger (singer) {
-      this.slideTitle = singer.Fsinger_name;
-      this.$refs.slidLeft.slideLeft();
+      this.singer = singer;
+      console.info(singer);
+      getSingerDetail(singer.Fsinger_mid).then((response) => {
+        console.info(response);
+        this.singerDetailList = response.data.list;
+      });
+      this.$refs.slidSongList.slideLeft();
     },
     clickSingerIndex (findex) {
       // this.$refs.scrollContainer.refresh();
@@ -119,12 +132,16 @@ export default {
           break;
         }
       }
+    },
+    eventSlideRight () {
+      this.singerDetailList = [];
     }
   }
 };
 </script>
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
+  @import "~common/stylus/mixin"
   .singer-container
     color: $color-text-d
     font-size: 12px
@@ -160,4 +177,13 @@ export default {
       .singer-name
         margin-left: 25px
         vertical-align: middle
+  .singer-detail-item
+    margin-top: 32px
+    .singer-detail-songname
+      color: $color-text
+    .singer-detail-albumname
+      margin-top: 10px
+      width: 90%
+      no-wrap()
+      color: $color-text-d
 </style>
