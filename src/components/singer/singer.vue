@@ -134,6 +134,7 @@ export default {
       }
     },
     eventSlideRight () {
+      // 子组件不能操作父组件里传递过来的数据
       this.singerDetailList = [];
     }
   }
