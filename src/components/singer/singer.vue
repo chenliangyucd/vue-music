@@ -30,7 +30,8 @@
 </template>
 <script type="text/ecmascript-6">
 import {getSingerList, getSingerDetail} from 'api/singer';
-import SlideSongList from 'base/slide-song-list';
+import SlideSongList from 'base/slide-song-list/slide-song-list';
+import { mapGetters, mapMutations } from 'vuex';
 import Scroll from 'base/scroll';
 export default {
   data () {
@@ -42,6 +43,10 @@ export default {
       singer: {},
       singerDetailList: []
     };
+  },
+  computed: {
+    ...mapGetters(['getSinger']),
+    ...mapMutations(['SET_SINGER'])
   },
   components: {
     Scroll,
