@@ -1,5 +1,5 @@
 const state = {
-  song: null
+  singer: null
 };
 
 export default state;

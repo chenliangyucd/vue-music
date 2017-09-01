@@ -1,5 +1,8 @@
 <template>
   <div class="singer-container">
+    <transition name="fade">
+      <router-view></router-view>
+    </transition>
     <scroll class="scroll-container" @scroll="scroll" :dataList="singerMap" :probeType="3" ref="scrollContainer">
       <div ref="singerList">
         <template v-for="(findex, index) in findexList">
@@ -32,6 +35,7 @@
 import {getSingerList, getSingerDetail} from 'api/singer';
 import SlideSongList from 'base/slide-song-list/slide-song-list';
 import { mapGetters, mapMutations } from 'vuex';
+import {SET_SINGER} from 'store/mutation-types';
 import Scroll from 'base/scroll';
 export default {
   data () {
@@ -44,13 +48,12 @@ export default {
       singerDetailList: []
     };
   },
-  computed: {
-    ...mapGetters(['getSinger']),
-    ...mapMutations(['SET_SINGER'])
-  },
   components: {
     Scroll,
     SlideSongList
+  },
+  computed: {
+    ...mapGetters(['getSinger'])
   },
   created () {
     getSingerList().then((response) => {
@@ -64,11 +67,13 @@ export default {
     clickSinger (singer) {
       this.singer = singer;
       console.info(singer);
+      this.SET_SINGER({singer});
       getSingerDetail(singer.Fsinger_mid).then((response) => {
         console.info(response);
         this.singerDetailList = response.data.list;
       });
-      this.$refs.slidSongList.slideLeft();
+      this.$router.push('/singer/singerDetail');
+      // this.$refs.slidSongList.slideLeft();
     },
     clickSingerIndex (findex) {
       // this.$refs.scrollContainer.refresh();
@@ -139,13 +144,18 @@ export default {
     eventSlideRight () {
       // 子组件不能操作父组件里传递过来的数据
       this.singerDetailList = [];
-    }
+    },
+    ...mapMutations([SET_SINGER])
   }
 };
 </script>
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
   @import "~common/stylus/mixin"
+  .fade-enter-active, .fade-leave-active
+    transition: all .3s
+  .fade-enter, .fade-leave-to
+    transform: translate3d(100%, 0, 0)
   .singer-container
     color: $color-text-d
     font-size: 12px

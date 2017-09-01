@@ -16,15 +16,16 @@
       }
     },
     mounted () {
-      this.$nextTick(() => {
-        let clientWidth = document.documentElement.clientWidth + 'px';
-        let tpLeft = `@keyframes slide-left{ from {transform: translateX(${clientWidth});} to {transform: translateX(0px);}}`;
-        let tpRight = `@keyframes slide-right{ from {transform: translateX(0px);} to {transform: translateX(${clientWidth});}}`;
-
-        let styleSheet = document.styleSheets[0];
-        styleSheet.insertRule(tpLeft);
-        styleSheet.insertRule(tpRight);
-      });
+      /**
+      *  这块犯的错误,基本都是translateX(100%)可以代替屏幕的整个宽度
+      *this.$nextTick(() => {
+      *  let clientWidth = document.documentElement.clientWidth + 'px';
+      *  let tpLeft = `@keyframes slide-left{ from {transform: translateX(${clientWidth});} to {transform: translateX(0px);}}`;
+      *  let tpRight = `@keyframes slide-right{ from {transform: translateX(0px);} to {transform: translateX(${clientWidth});}}`;
+      *  let styleSheet = document.styleSheets[0];
+      *  styleSheet.insertRule(tpLeft);
+      *  styleSheet.insertRule(tpRight);
+      }); */
     },
     data () {
       return {
@@ -80,6 +81,16 @@
         color: #fff
         font-size: 18px
         font-style: normal
+  @keyframes slide-left 
+    from 
+      transform: translateX(100%)
+    to 
+      transform: translateX(0px)
+  @keyframes slide-right
+    from
+      transform: translateX(0px)
+    to 
+      transform: translateX(100%)
   .slide-init
     animation: slide-init 0.1S forwards 
   .slide-left-animation
