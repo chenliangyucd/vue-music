@@ -7,8 +7,7 @@ import createLogger from 'vuex/dist/logger';
 
 Vue.use(Vuex);
 const debug = process.env.NODE_ENV !== 'production';
-console.info('index.js');
-console.info(getters);
+
 export default new Vuex.Store({
   state,
   mutations,

@@ -31,6 +31,11 @@
       pullDownRefreshStop: {
         type: Number,
         default: 40
+      },
+      // 动态改变容器的top,left值
+      dynamic: {
+        type: Object,
+        default: () => { return {top: 0, left: 0}; }
       }
     },
     mounted () {
@@ -82,6 +87,23 @@
         this.$nextTick(() => {
           this.refresh();
         });
+      },
+      dynamic (dynamic) {
+        let flag = false;
+        if (dynamic.top) {
+          this.$refs.scrollContainer.style.top = dynamic.top;
+          flag = true;
+        }
+
+        if (dynamic.left) {
+          this.$refs.scrollContainer.style.left = dynamic.left;
+          flag = true;
+        }
+
+        if (flag) {
+          this.refresh();
+        }
+        console.info('hhee');
       }
     }
   };

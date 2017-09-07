@@ -32,7 +32,7 @@
   </div>	
 </template>
 <script type="text/ecmascript-6">
-import {getSingerList, getSingerDetail} from 'api/singer';
+import { getSingerList } from 'api/singer';
 import SlideSongList from 'base/slide-song-list/slide-song-list';
 import { mapGetters, mapMutations } from 'vuex';
 import {SET_SINGER} from 'store/mutation-types';
@@ -68,10 +68,10 @@ export default {
       this.singer = singer;
       console.info(singer);
       this.SET_SINGER({singer});
-      getSingerDetail(singer.Fsinger_mid).then((response) => {
-        console.info(response);
-        this.singerDetailList = response.data.list;
-      });
+      // getSingerDetail(singer.Fsinger_mid).then((response) => {
+      //  console.info(response);
+      //  this.singerDetailList = response.data.list;
+      // });
       this.$router.push('/singer/singerDetail');
       // this.$refs.slidSongList.slideLeft();
     },
