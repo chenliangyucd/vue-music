@@ -4,7 +4,8 @@
     <tab></tab>
     <keep-alive>
       <router-view></router-view>
-    </keep-alive>  
+    </keep-alive>
+    <song-play></song-play>
   </div>
 </template>
 
@@ -12,11 +13,13 @@
 /* http://vuemusic.t.imooc.io/#/rank */
 import MHeader from 'components/m-header/m-header';
 import Tab from 'components/tab/tab';
+import SongPlay from 'components/song-play/song-play';
 export default {
   name: 'app',
   components: {
     MHeader,
-    Tab
+    Tab,
+    SongPlay
   }
 };
 </script>
@@ -26,5 +29,5 @@ export default {
   @import  "~common/stylus/variable"
   @import  "~common/stylus/index"
   // @import "~animate.css"
-  
+
 </style>

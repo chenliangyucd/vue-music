@@ -14,7 +14,7 @@
         <div class="song-item-info"><span v-for="singer in song.singer" v-text="singer.name"></span><span v-text="'·' + song.albumname"></span></div>
       </div>
     </li>
-  </ul>	
+  </ul>
 </template>
 <script type="text/ecmascript-6">
 import { mapGetters } from 'vuex';
@@ -51,7 +51,7 @@ export default {
       .song-trophy1
         bg-image('second', 'png')
       .song-trophy2
-        bg-image('third', 'png')  
+        bg-image('third', 'png')
       .song-item-rank
         display: flex
         flex-direction: column
