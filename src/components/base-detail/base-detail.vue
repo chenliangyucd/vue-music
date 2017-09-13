@@ -1,11 +1,13 @@
 <template>
   <div>
-    <div class="slide-head">
+    <div class="slide-head" ref="slideHead">
         <i class="slide-icon icon-back" @click="slideLeft"></i>
         <em class="slide-title" v-text="slideTitle"></em>
     </div>
     <div class="slide-content" ref="slideContent">
-      <img class="slide-content-img" :src="slideAvatorUrl" alt="服务器挂了">
+      <div class="slide-img-container" ref="slideImgContainer">
+        <img class="slide-content-img" :src="slideAvatorUrl" alt="服务器挂了">
+      </div>
       <div class="slide-random-play">
         <i class="slide-icon icon-play"></i>随机播放全部
       </div>
@@ -20,7 +22,8 @@
 <script type="text/ecmascript-6">
   import SongList from 'components/song-list/song-list';
   import Scroll from 'base/scroll';
-  import { mapGetters } from 'vuex';
+  import { mapGetters, mapMutations } from 'vuex';
+  import {SET_SONG_LIST} from 'store/mutation-types';
   export default {
     props: {
       slideTitle: {
@@ -43,7 +46,8 @@
     },
     mounted () {
       this.$nextTick(() => {
-        this.dynamic = {top: this.$refs.slideContent.clientHeight + 'px'};
+        this.dynamic = {top: this.$refs.slideContent.offsetHeight + 'px'};
+        console.info('打印slideHead高度', this.$refs.slideHead.clientHeight, this.$refs.slideHead.offsetHeight, this.$refs.slideHead.scrollHeight);
       });
     },
     components: {
@@ -55,16 +59,34 @@
     },
     methods: {
       slideLeft () {
+        // 清空SongList 数组
+        this[SET_SONG_LIST]({songList: []});
         this.$emit('slideLeft');
       },
       scroll (offset) {
+        let slideContentHeight = this.$refs.slideContent.offsetHeight;
+        let slideHeadHeight = this.$refs.slideHead.offsetHeight;
         if (offset.y < 0) {
           let absY = Math.abs(offset.y);
-          this.$refs.slideCover.style.height = absY + 'px';
+          let maxHeight = slideContentHeight - slideHeadHeight;
+          // 判断是否达到最大高度
+          if (absY >= maxHeight) {
+            this.$refs.slideCover.style.height = maxHeight + 'px';
+            this.$refs.slideImgContainer.style.height = slideHeadHeight + 'px';
+            this.$refs.slideImgContainer.style.zIndex = '1';
+          } else {
+            this.$refs.slideCover.style.height = absY + 'px';
+            this.$refs.slideImgContainer.style.height = '100%';
+            this.$refs.slideImgContainer.style.zIndex = 'auto';
+          }
+          this.$refs.slideContent.style.transform = 'none';
         } else {
           this.$refs.slideCover.style.height = 0;
+          let radio = (slideContentHeight + offset.y) / slideContentHeight;
+          this.$refs.slideContent.style.transform = `scale(${radio}, ${radio})`;
         }
-      }
+      },
+      ...mapMutations([SET_SONG_LIST])
     }
   };
 </script>
@@ -77,7 +99,7 @@
    top: 0;
    left: 0
    right: 0
-   z-index: 1
+   z-index: 3
    height: 30px
    padding-top: 12px
    text-align: center
@@ -104,12 +126,17 @@
       bottom: 0
       height: 0
       background-color: $color-background
-    .slide-content-img
+    .slide-img-container
       position: absolute
-      top: 0
-      left: 0
+      top:0
+      left:0
       width: 100%
-      filter:grayscale(.5)
+      height: 100%
+      overflow:hidden;
+      .slide-content-img
+        display: block
+        width: 100%
+        filter: grayscale(.5)
     .slide-random-play
       position: absolute
       left: 0
