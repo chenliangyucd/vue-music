@@ -47,7 +47,8 @@
           tempSong.songmid = song.musicData.songmid;
           tempSong.songname = song.musicData.songname;
           tempSong.albumname = song.musicData.albumname;
-          tempSong.playurl = song.playurl;
+          tempSong.albumid = song.musicData.albumid;
+          tempSong.albummid = song.musicData.albummid;
           tempSong.singer = song.musicData.singer;
           songList.push(SongFactory(tempSong));
         }

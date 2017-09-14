@@ -1,6 +1,6 @@
 <template>
   <ul class="song-list">
-    <li class="song-item" v-for="(song, index) in getSongList">
+    <li class="song-item" @click="clickSong(index)" v-for="(song, index) in getSongList">
       <div class="song-item-rank" v-if="rank">
         <template v-if="index < 3">
           <i class="song-trophy" :class="{'song-trophy0': index === 0,'song-trophy1': index === 1,'song-trophy2': index === 2}"></i>
@@ -17,7 +17,7 @@
   </ul>
 </template>
 <script type="text/ecmascript-6">
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
   props: {
@@ -26,8 +26,17 @@ export default {
       default: false
     }
   },
+
+  methods: {
+    clickSong (index) {
+      console.info('打印座位下标', index);
+      this.playSong(index);
+    },
+    ...mapActions(['playSong'])
+  },
+
   computed: {
-    ...mapGetters(['getSinger', 'getSongList'])
+    ...mapGetters(['getSongList'])
   }
 };
 </script>
