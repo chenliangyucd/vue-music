@@ -11,8 +11,13 @@ const mutations = {
     state.currentIndex = currentIndex;
   },
   [types.SET_SHRINK_SONG_PLAY] (state, { shrinkSongPlay }) {
-    console.info('shrinkSongPlay', shrinkSongPlay);
     state.shrinkSongPlay = shrinkSongPlay;
+  },
+  [types.SET_SONG_PLAY] (state, { songPlay }) {
+    state.songPlay = songPlay;
+  },
+  [types.SET_PLAY_SONG_LIST] (state, {playSongList}) {
+    state.playSongList = playSongList;
   }
 };
 

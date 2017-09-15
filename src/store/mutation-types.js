@@ -2,3 +2,5 @@ export const SET_SINGER = 'SET_SINGER';
 export const SET_SONG_LIST = 'SET_SONG_LIST';
 export const SET_CURRENT_INDEX = 'SET_CURRENT_INDEX';
 export const SET_SHRINK_SONG_PLAY = 'SET_SHRINK_SONG_PLAY';
+export const SET_SONG_PLAY = 'SET_SONG_PLAY';
+export const SET_PLAY_SONG_LIST = 'SET_PLAY_SONG_LIST';

@@ -1,41 +1,46 @@
 <template>
-  <div v-if="getShrinkSongPlay" class="song-play-container">
-    <div class="song-play-head">
-      <i @click="shrinkSongPlay" class="icon-back"></i>
-      <span v-text="getSong.songname"></span>
-    </div>
-    <div class="singer-name">
-      <span v-for="singer in getSong.singer" v-text="singer.name"></span>
-    </div>
-    <div class="album-img-container">
-      <img :style="{width: albumImgWidth, height : albumImgHeight}" :src="getSong.albumimgurl">
-    </div>
-    <div class="song-lyric">
-      顺应时代的改变，看那些拙略的表演
-    </div>
-    <div class="dot-container">
-      <i class="dot-long"></i><i class="dot"></i>
-    </div>
-    <div class="progress-bar-container">
-      <div class="progress-time">1:21</div>
-      <div class="progress-bar">
-        <div class="progress-plan-bar">
-          <div class='progress-btn'></div>
-        </div>
+  <div v-if="songPlay" :class="{'song-shrink-container': !shrinkSongPlay, 'song-play-container': shrinkSongPlay}">
+    <div v-show="shrinkSongPlay" class="song-play-container">
+      <div class="song-play-head">
+        <i @click="clickShrink" class="icon-back"></i>
+        <span v-text="getSong.songname"></span>
       </div>
-      <div class="progress-time">4:21</div>
+      <div class="singer-name">
+        <span v-for="singer in getSong.singer" v-text="singer.name"></span>
+      </div>
+      <div class="album-img-container">
+        <img :style="{width: albumImgWidth, height : albumImgHeight}" :src="getSong.albumimgurl">
+      </div>
+      <div class="song-lyric">
+        顺应时代的改变，看那些拙略的表演
+      </div>
+      <div class="dot-container">
+        <i class="dot-long"></i><i class="dot"></i>
+      </div>
+      <div class="progress-bar-container">
+        <div class="progress-time" v-text="currentShowTime"></div>
+        <div class="progress-bar" ref="progressBar">
+          <div class="progress-plan-bar" :style="{width: progressPlanWidth}">
+            <div class='progress-btn'></div>
+          </div>
+        </div>
+        <div class="progress-time" v-text="durationShowTime"></div>
+      </div>
+      <div class="song-play-operate">
+        <i class="icon-random"></i>
+        <i class="icon-prev" @click="changeSong(-1)"></i>
+        <i :class="{'icon-play': !playing,'icon-pause': playing}"  @click="audioPlay"></i>
+        <i class="icon-next" @click="changeSong(1)"></i>
+        <i class="icon-not-favorite" @click="changeFavorite"></i>
+      </div>
+      <img class="song-play-bg" :src="getSong.albumimgurl">
     </div>
-    <div class="song-play-operate">
-      <i class="icon-random"></i>
-      <i class="icon-prev" @click="changeSong(-1)"></i>
-      <i :class="{'icon-play': !playing,'icon-pause': playing}"  @click="audioPlay"></i>
-      <i class="icon-next" @click="changeSong(1)"></i>
-      <i class="icon-not-favorite" @click="changeFavorite"></i>
+    <div class="song-shrink-content" v-show="!shrinkSongPlay" @click="clickMagnify">
+      老子是缩小的音乐播放器
     </div>
-    <audio style="display: none;" ref="audio" controls="controls" loop="loop" preload="auto" :src="getSong.playurl">
+    <audio style="display: none;" ref="audio" @timeupdate="timeupdate" @canplay="canplay" preload="auto" :src="getSong.playurl">
       你的浏览器不支持audio标签
     </audio>
-    <img :src="getSong.albumimgurl" class="song-play-bg">
   </div>
 </template>
 <script type="text/ecmascript-6">
@@ -46,32 +51,61 @@
       return {
         albumImgHeight: 'auto',
         albumImgWidth: 'auto',
+        progressPlanWidth: '16px',
+        progressButtonLength: 16,
+        progressBarWidth: 0,
+        duration: 0,
+        currentTime: 0,
+        durationShowTime: '0:00',
+        currentShowTime: '0:00',
         playing: false
       };
     },
     mounted () {
       this.$nextTick(() => {
+        // 初始化图片宽度高度
         let width = document.documentElement.clientWidth;
-        let imgWidth = Math.sqrt(width * width / 2) + 'px';
-        console.info('打印测试imgWidth', imgWidth);
-        this.albumImgHeight = imgWidth;
-        this.albumImgWidth = imgWidth;
+        let imgWH = Math.sqrt(width * width / 2) + 'px';
+
+        this.albumImgHeight = imgWH;
+        this.albumImgWidth = imgWH;
+
+        // 初始化progressBar的宽度
+        // this.progressBarWidth = this.$refs.progressBar.clientWidth;
+        // console.info('打印progressBarWidth', this.progressBarWidth);
       });
     },
     methods: {
+      canplay () {
+        this.duration = this.$refs.audio.duration;
+        this.durationShowTime = this._getFormatTime(this.$refs.audio.duration);
+        if (this.playing) {
+          this.$refs.audio.play();
+        }
+      },
+      // 在这里计算比例值，
+      timeupdate () {
+        this.currentTime = this.$refs.audio.currentTime;
+        this.currentShowTime = this._getFormatTime(this.$refs.audio.currentTime);
+        let ratio = 0;
+        if (this.duration > 0) {
+          ratio = this.currentTime / this.duration;
+        }
+        if (this.songPlay && this.shrinkSongPlay) {
+          let len = (this.$refs.progressBar.clientWidth - this.progressButtonLength) * ratio + this.progressButtonLength;
+          this.progressPlanWidth = len + 'px';
+        }
+      },
+      clickMagnify () {
+        this.setShrinkSongPlay({shrinkSongPlay: true});
+      },
       // 点击向下切换
-      shrinkSongPlay () {
+      clickShrink () {
         this.setShrinkSongPlay({shrinkSongPlay: false});
       },
       // 切换歌曲
       changeSong (num) {
         this.actionChangeSong(num);
-        console.info('测试播放', this.playing);
-        if (this.playing) {
-          this.$nextTick(() => {
-            this.$refs.audio.play();
-          });
-        }
       },
       // 点击切换喜欢的歌曲
       changeFavorite () {
@@ -87,11 +121,17 @@
           this.playing = true;
         }
       },
+      _getFormatTime (second) {
+        let minute = Math.floor(second / 60);
+        second = Math.floor(second - minute * 60) + '';
+        second = second.padStart(2, '0');
+        return minute + ':' + second;
+      },
       ...mapMutations({setShrinkSongPlay: types.SET_SHRINK_SONG_PLAY}),
       ...mapActions({actionChangeSong: 'changeSong'})
     },
     computed: {
-      ...mapGetters(['getShrinkSongPlay', 'getSong'])
+      ...mapGetters({shrinkSongPlay: 'getShrinkSongPlay', songPlay: 'getSongPlay', getSong: 'getSong'})
     }
   };
 </script>
@@ -101,6 +141,19 @@
 
   $song-play-width = 86%
   $progress-height = 6px
+
+  .song-shrink-container
+    position: fixed
+    left: 0
+    right: 0
+    bottom: 0
+    height: 60px
+    z-index: 5
+    .song-shrink-content
+      display: flex
+      height: 100%
+      background-color: #2d2d2d
+      justify-content: center
 
   .song-play-container
     position: fixed
@@ -158,6 +211,8 @@
       align-items: center
       margin: 14px auto 0
       .progress-time
+        width: 25px
+        flex-basis: 25px
         font-size: $font-size-small
         color: $color-text
       .progress-bar
@@ -171,7 +226,6 @@
           top: 0
           left: 0
           height: $progress-height
-          width: 20px
           background-color: $color-theme
           .progress-btn
             position: absolute
