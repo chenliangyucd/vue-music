@@ -9,7 +9,7 @@
         <span v-for="singer in getSong.singer" v-text="singer.name"></span>
       </div>
       <div class="album-img-container">
-        <img :style="{width: albumImgWidth, height : albumImgHeight}" :src="getSong.albumimgurl">
+        <img :style="{'width': albumImgWidth, 'height': albumImgHeight, 'animation-play-state': animationPlayState}" class="animation-circle" :src="getSong.albumimgurl">
       </div>
       <div class="song-lyric">
         顺应时代的改变，看那些拙略的表演
@@ -36,7 +36,19 @@
       <img class="song-play-bg" :src="getSong.albumimgurl">
     </div>
     <div class="song-shrink-content" v-show="!shrinkSongPlay" @click="clickMagnify">
-      老子是缩小的音乐播放器
+      <div class="song-shrink-left">
+        <img :style="{'animation-play-state': animationPlayState}" class="song-shrink-img animation-circle" :src="getSong.albumimgurl">
+        <div class="song-shrink-info">
+          <div class="song-shrink-songname" v-text="getSong.songname">
+          </div>
+          <div class="song-shrink-singername">
+            <span v-for="singer in getSong.singer" v-text="singer.name"></span>
+          </div>
+        </div>
+      </div>
+      <div class="song-shrink-right">
+      <i :class="{'icon-play': !playing,'icon-pause': playing}"  @click.stop="audioPlay"></i><i class="icon-playlist"></i>
+      </div>
     </div>
     <audio style="display: none;" ref="audio" @timeupdate="timeupdate" @canplay="canplay" preload="auto" :src="getSong.playurl">
       你的浏览器不支持audio标签
@@ -131,6 +143,13 @@
       ...mapActions({actionChangeSong: 'changeSong'})
     },
     computed: {
+      animationPlayState () {
+        if (this.playing) {
+          return 'running';
+        } else {
+          return 'paused';
+        }
+      },
       ...mapGetters({shrinkSongPlay: 'getShrinkSongPlay', songPlay: 'getSongPlay', getSong: 'getSong'})
     }
   };
@@ -153,8 +172,31 @@
       display: flex
       height: 100%
       background-color: #2d2d2d
-      justify-content: center
-
+      justify-content: space-between
+      align-items: center
+      .song-shrink-left
+        display: flex
+        margin-left: 18px
+        .song-shrink-img
+          width: 42px
+          height: 42px
+          border-radius: 50%
+        .song-shrink-info
+          display: flex
+          justify-content: space-around
+          flex-direction: column
+          margin-left: 10px
+          .song-shrink-singername
+            color: #656565
+            font-size: $font-size-small-s
+      .song-shrink-right
+        font-size: 0;
+        color: $color-theme
+        margin-right: 10px
+        i
+          font-size: 32px
+        i + i
+          margin-left: 18px
   .song-play-container
     position: fixed
     top: 0
@@ -256,5 +298,13 @@
       width: 100%
       height: 100%
       z-index: -1
-      filter: blur(20px);
+      filter: blur(20px)
+  @keyframes circle
+    from
+      transform: rotate(0deg)
+    to
+      transform: rotate(360deg)
+  .animation-circle
+    animation: circle 60s infinite forwards
+
 </style>
